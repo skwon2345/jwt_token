@@ -3,15 +3,19 @@ import { Link } from 'react-router-dom'
 import AuthContext from '../context/AuthContext'
 
 const Header = () => {
-  let {name} = useContext(AuthContext)
-  
+  let {user} = useContext(AuthContext)
+
   return (
     <div>
         <Link to="/">Home</Link>
         <span> | </span>
-        <Link to="/login">Login</Link>
-
-        <p>Hello {name}</p>
+        {user ? (
+          <p>Logout</p>
+        ) : (
+          <Link to="/login">Login</Link>
+        )}
+        
+        {user && <p>Hello {user.username}</p>}
     </div>
   )
 }
