@@ -1,6 +1,6 @@
 from base.models import Note
-from django.http import JsonResponse
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView
@@ -25,6 +25,7 @@ class MyTokenObtainPairView(TokenObtainPairView):
 
 
 @api_view(["GET"])
+@permission_classes([IsAuthenticated])
 def getRoutes(request):
     routes = [
         "/api/token",
@@ -35,8 +36,10 @@ def getRoutes(request):
 
 
 @api_view(["GET"])
+@permission_classes([IsAuthenticated])
 def getNotes(request):
-    notes = Note.objects.all()
+    user = request.user
+    notes = user.note_set.all()  # get all the children notes.
     serializer = NoteSerializer(notes, many=True)
 
     return Response(serializer.data)
